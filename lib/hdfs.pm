@@ -21,7 +21,7 @@ has 'uri' => (
 
 sub BUILD {
     my $self = shift;
-    
+
     my($stdout, $stderr, $success, $exit_code) = capture_exec($self->cmd);
     $exit_code == -1 && die("unable to find 'hadoop' command; set HADOOP_HOME or pass 'home' argument to constructor");
 }
