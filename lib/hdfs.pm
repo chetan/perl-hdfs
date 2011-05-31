@@ -59,4 +59,11 @@ sub ls {
     return HDFS::Dir->new(hdfs => $self, path => $path)->ls();
 }
 
+sub ls_r {
+    my($self,$path) = @_;
+    $path ||= "/";
+
+    return HDFS::Dir->new(hdfs => $self, path => $path)->ls_r();
+}
+
 1;

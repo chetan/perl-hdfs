@@ -15,8 +15,24 @@ sub ls {
     my %ret = $self->hdfs->run_cmd("fs -ls $path");
     $ret{success} || die("unable to list: " . $ret{stdout});
 
+    return $self->_parse_files($ret{stdout});
+}
+
+sub ls_r {
+    my($self) = @_;
+    my $path = $self->hdfs->path($self->path);
+
+    my %ret = $self->hdfs->run_cmd("fs -lsr $path");
+    $ret{success} || die("unable to list: " . $ret{stdout});
+
+    return $self->_parse_files($ret{stdout});
+}
+
+sub _parse_files {
+    my($self, $str) = @_;
+
     my $files = [];
-    my @lines = split(/\n/, $ret{stdout});
+    my @lines = split(/\n/, $str);
     my $c = 0;
     for my $line (@lines) {
         $c++;
