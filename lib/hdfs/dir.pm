@@ -6,7 +6,7 @@ extends 'HDFS::File';
 
 use IO::CaptureOutput qw(capture_exec);
 use Data::Dumper;
-
+use File::Basename qw(fileparse);
 
 sub ls {
     my($self) = @_;
@@ -43,9 +43,11 @@ sub _parse_files {
         # permissions number_of_replicas userid groupid filesize modification_date modification_time filename
         my($perm, $repl, $user, $group, $size, $date, $time, @file) = split(/\s+/, $line);
 
+        my($f, $p) = fileparse(join(" ", @file));
+
         my $args = { permissions => $perm, replicas => $repl, user => $user, group => $group,
-                     size => $size, date => $date, time => $time, filename => join(" ", @file),
-                     path => $self->path, hdfs => $self->hdfs };
+                     size => $size, date => $date, time => $time, file => $f,
+                     path => $p, hdfs => $self->hdfs };
 
         if ($perm =~ /^d/) {
             push @$files, HDFS::Dir->new($args);

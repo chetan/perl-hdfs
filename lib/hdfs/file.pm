@@ -3,10 +3,6 @@ package HDFS::File;
 use Moose;
 use Data::Dumper;
 
-# { permissions => $perm, replicas => $repl, user => $user, group => $group,
-               # size => $size, date => $date, time => $time, filename => join(" ", @file),
-               # path => $self->path, }
-
 has 'hdfs' => (
    is       => 'ro',
    isa      => 'HDFS',
@@ -26,7 +22,7 @@ has 'group'       => ( is => 'ro' );
 has 'size'        => ( is => 'ro' );
 has 'date'        => ( is => 'ro' );
 has 'time'        => ( is => 'ro' );
-has 'filename'    => ( is => 'ro' );
+has 'file'        => ( is => 'ro' );
 
 sub is_file {
     my $self = shift;
@@ -38,5 +34,9 @@ sub is_dir {
     return $self->permissions =~ /^d/ ? 1 : 0;
 }
 
+sub filename {
+    my $self = shift;
+    return $self->path . $self->file;
+}
 
 1;
