@@ -66,4 +66,10 @@ sub ls_r {
     return HDFS::Dir->new(hdfs => $self, path => $path)->ls_r();
 }
 
+sub copyToLocal {
+    my($self, $src, $dest) = @_;
+
+    return HDFS::File->new(hdfs => $self, path => $src)->copyToLocal($dest);
+}
+
 1;

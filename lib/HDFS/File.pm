@@ -39,4 +39,14 @@ sub filename {
     return $self->path . $self->file;
 }
 
+sub copyToLocal {
+    my($self, $dest) = @_;
+
+    my $path = $self->hdfs->path($self->filename);
+    my %ret = $self->hdfs->run_cmd("fs -copyToLocal $path $dest");
+    $ret{success} || die("unable to copy $path to $dest: " . $ret{stdout} . "\n" . $ret{stderr});
+
+    return 1;
+}
+
 1;
