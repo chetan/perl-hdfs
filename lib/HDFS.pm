@@ -1,5 +1,7 @@
 package HDFS;
 
+our $VERSION = 0.01;
+
 use Moose;
 use IO::CaptureOutput qw(capture_exec);
 
