@@ -9,14 +9,12 @@ use HDFS::File;
 
 has 'home' => (
     is       => 'ro',
-    init_arg => 'home',
     default  => $ENV{HADOOP_HOME},
 );
 
 has 'uri' => (
     is       => 'ro',
     default  => "hdfs://localhost:9000",
-    init_arg => 'uri',
 );
 
 sub BUILD {
@@ -38,14 +36,16 @@ sub cmd {
 
 sub run_cmd {
     my($self, $cmd) = @_;
+
     my $c = $self->cmd . " " . $cmd;
     print "cmd: $c\n";
+
     my($stdout, $stderr, $success, $exit_code) = capture_exec($c);
     return (stdout => $stdout, stderr => $stderr, success => $success, exit_code => $exit_code);
 }
 
 sub path {
-    my($self,$path) = @_;
+    my($self, $path) = @_;
     if (substr($path,0,1) ne "/") {
         $path = "/$path";
     }
@@ -53,14 +53,14 @@ sub path {
 }
 
 sub ls {
-    my($self,$path) = @_;
+    my($self, $path) = @_;
     $path ||= "/";
 
     return HDFS::Dir->new(hdfs => $self, path => $path)->ls();
 }
 
 sub ls_r {
-    my($self,$path) = @_;
+    my($self, $path) = @_;
     $path ||= "/";
 
     return HDFS::Dir->new(hdfs => $self, path => $path)->ls_r();
@@ -70,6 +70,18 @@ sub copyToLocal {
     my($self, $src, $dest) = @_;
 
     return HDFS::File->new(hdfs => $self, path => $src)->copyToLocal($dest);
+}
+
+sub rm {
+    my($self, $path) = @_;
+
+    return HDFS::File->new(hdfs => $self, path => $path)->rm();
+}
+
+sub rm_r {
+    my($self, $path) = @_;
+
+    return HDFS::Dir->new(hdfs => $self, path => $path)->rm_r();
 }
 
 1;

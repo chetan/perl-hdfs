@@ -10,22 +10,29 @@ use File::Basename qw(fileparse);
 
 sub ls {
     my($self) = @_;
-    my $path = $self->hdfs->path($self->path);
 
-    my %ret = $self->hdfs->run_cmd("fs -ls $path");
-    $ret{success} || die("unable to list: " . $ret{stdout});
+    my %ret = $self->hdfs->run_cmd("fs -ls ${\$self->uri}");
+    $ret{success} || die("unable to ls ${\$self->uri}: " . $ret{stdout});
 
     return $self->_parse_files($ret{stdout});
 }
 
 sub ls_r {
     my($self) = @_;
-    my $path = $self->hdfs->path($self->path);
 
-    my %ret = $self->hdfs->run_cmd("fs -lsr $path");
-    $ret{success} || die("unable to list: " . $ret{stdout});
+    my %ret = $self->hdfs->run_cmd("fs -lsr ${\$self->uri}");
+    $ret{success} || die("unable to lsr ${\$self->uri}: " . $ret{stdout});
 
     return $self->_parse_files($ret{stdout});
+}
+
+sub rm_r {
+    my $self = shift;
+
+    my %ret = $self->hdfs->run_cmd("fs -rmr ${\$self->uri}");
+    $ret{success} || die("unable to rmr ${\$self->uri}: " . $ret{stdout} . "\n" . $ret{stderr});
+
+    return 1;
 }
 
 sub _parse_files {

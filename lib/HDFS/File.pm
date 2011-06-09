@@ -6,13 +6,17 @@ use Data::Dumper;
 has 'hdfs' => (
    is       => 'ro',
    isa      => 'HDFS',
-   init_arg => 'hdfs',
 );
 
 has 'path' => (
    is       => 'ro',
    isa      => 'Str',
-   init_arg => 'path',
+);
+
+has 'file' => (
+   is       => 'ro',
+   isa      => 'Str',
+   default  => '',
 );
 
 has 'permissions' => ( is => 'ro' );
@@ -22,7 +26,6 @@ has 'group'       => ( is => 'ro' );
 has 'size'        => ( is => 'ro' );
 has 'date'        => ( is => 'ro' );
 has 'time'        => ( is => 'ro' );
-has 'file'        => ( is => 'ro' );
 
 sub is_file {
     my $self = shift;
@@ -39,12 +42,25 @@ sub filename {
     return $self->path . $self->file;
 }
 
+sub uri {
+    my $self = shift;
+    return $self->hdfs->path($self->filename);;
+}
+
 sub copyToLocal {
     my($self, $dest) = @_;
 
-    my $path = $self->hdfs->path($self->filename);
-    my %ret = $self->hdfs->run_cmd("fs -copyToLocal $path $dest");
-    $ret{success} || die("unable to copy $path to $dest: " . $ret{stdout} . "\n" . $ret{stderr});
+    my %ret = $self->hdfs->run_cmd("fs -copyToLocal ${\$self->uri} $dest");
+    $ret{success} || die("unable to copy ${\$self->uri} to $dest: " . $ret{stdout} . "\n" . $ret{stderr});
+
+    return 1;
+}
+
+sub rm {
+    my $self = shift;
+
+    my %ret = $self->hdfs->run_cmd("fs -rm ${\$self->uri}");
+    $ret{success} || die("unable to rm ${\$self->uri}: " . $ret{stdout} . "\n" . $ret{stderr});
 
     return 1;
 }
