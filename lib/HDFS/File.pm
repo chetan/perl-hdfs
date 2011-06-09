@@ -1,7 +1,6 @@
 package HDFS::File;
 
 use Moose;
-use Data::Dumper;
 
 has 'hdfs' => (
    is       => 'ro',

@@ -5,7 +5,6 @@ use Moose;
 extends 'HDFS::File';
 
 use IO::CaptureOutput qw(capture_exec);
-use Data::Dumper;
 use File::Basename qw(fileparse);
 
 sub ls {

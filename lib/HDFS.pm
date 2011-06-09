@@ -1,7 +1,6 @@
 package HDFS;
 
 use Moose;
-use Data::Dumper;
 use IO::CaptureOutput qw(capture_exec);
 
 use HDFS::Dir;
