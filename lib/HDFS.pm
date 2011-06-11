@@ -18,6 +18,8 @@ has 'uri' => (
     default  => "hdfs://localhost:9000",
 );
 
+has 'user' => ( is => 'rw' );
+
 sub BUILD {
     my $self = shift;
 
@@ -39,6 +41,9 @@ sub run_cmd {
     my($self, $cmd) = @_;
 
     my $c = $self->cmd . " " . $cmd;
+    if ($self->user) {
+        $c = "sudo -u ${\$self->user} $c";
+    }
     print "cmd: $c\n";
 
     my($stdout, $stderr, $success, $exit_code) = capture_exec($c);
